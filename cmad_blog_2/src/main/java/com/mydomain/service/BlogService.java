@@ -64,7 +64,7 @@ Blogdao dao = new Blogdao();
 	@POST
 	@Secured
 	@Path("/search/{param}")
-	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
 	public List<Posts> blogSearch(@PathParam("param") String param) {
 		System.out.println("Inside Search  : "+param+ " \n" );
 		return (dao.blogSearchStr(param));

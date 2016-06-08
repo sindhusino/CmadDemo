@@ -36,6 +36,11 @@ public class Blogdao {
 	
 		List<Posts> value = dataStore.find(Posts.class).retrievedFields(true, "postTitle", "postAbout", "id").asList();
 		//	List<Posts> hotels = dataStore.find(Posts.class).criteria(null)asList();
+		Iterator itr = value.iterator();
+	      while(itr.hasNext()) {
+	         Object element = itr.next();
+	         System.out.print("data: " + element + " ");
+	      }
 		return value;	 
 	}
 
@@ -88,25 +93,34 @@ public class Blogdao {
 	
 	public List<Posts> blogSearchStr(String str) {
 		Datastore dataStore = ServicesFactory.getMongoDB();
-		ObjectId oid = null;
-		try {
-				oid = new ObjectId(id);
-				
-			} catch (Exception e) {// Ignore format errors
-			}
-		dataStore.ensureIndexes();
-		List<Posts> post= dataStore.createQuery(Posts.class).search(str).asList();
+	//	List<Posts> value = dataStore.find(Posts.class).retrievedFields(true, "postTitle", "postAbout", "id").asList();
+		Query<Posts> query = dataStore.createQuery(Posts.class).disableValidation().retrievedFields(true, "postTitle", "postAbout", "id");
 
+		List<Posts> post= query.field("postAbout").containsIgnoreCase(str).asList();
 		Iterator itr = post.iterator();
 	      while(itr.hasNext()) {
 	         Object element = itr.next();
-	         System.out.print(element + " ");
+	         System.out.print("data: " + element + " ");
 	      }
-		//find({$text: {$search: "dogs"}}, {score: {$meta: "toextScore"}}).sort({score:{$meta:"textScore"}})
-		//post = dataStore.createQuery(Posts.class).field("id")
-						//.equal(oid).get();
-		return post;
+	      return post;
+	      /*
+			Datastore dataStore = ServicesFactory.getMongoDB();
+			dataStore.ensureIndexes();
+			//List<Posts> post= dataStore.createQuery(Posts.class).search(str).asList();
+			
+			List<Posts> post= dataStore.createQuery(Posts.class).field("postAbout").containsIgnoreCase(str).asList();
+			Iterator itr = post.iterator();
+		      while(itr.hasNext()) {
+		         Object element = itr.next();
+		         System.out.print(element + " ");
+		      }
+			//find({$text: {$search: "dogs"}}, {score: {$meta: "toextScore"}}).sort({score:{$meta:"textScore"}})
+			//post = dataStore.createQuery(Posts.class).field("id")
+							//.equal(oid).get();
+			return post;
+		
+		*/
+//		Query<Posts> results =dataStore.find();
+		
 	}
-	
-	
 }

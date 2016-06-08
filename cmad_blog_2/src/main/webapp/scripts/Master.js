@@ -161,7 +161,7 @@
 	
 	app.controller('WelcomeController', ['$scope','$http','$log','$location','sharedProperties','$route','sharedToken', function($scope,$http,$log,$location, sharedProperties, $route, sharedToken) {
 		$scope.loginDisplay = false;
-		
+		$scope.homeDisplay = false;
 		console.log("inside WelcomeController");
 		$scope.titles = [];
 		$scope.token = sharedToken.gettoken();
@@ -182,6 +182,11 @@
 			$location.url('/About');
 		};
 		
+		$scope.Home = function() {
+			console.log("inside Home");
+			$route.reload();
+		};
+		
 		$scope.Blog = function(value) {
 			$scope.value = value;
 			console.log("blog function");
@@ -193,14 +198,17 @@
 		
 		$scope.Search = function(value) {
 			$scope.title = value;
-			console.log("inside Search"+$scope.title.title);
+			console.log("inside Search : "+$scope.title.title);
 			$http.defaults.headers.common['Authorization'] = 'Bearer ' + $scope.token.tokenValue;
 			var formGet = $http.post(
 					'blog/page/search/'+$scope.title.title,
 					$scope.title.title).success(function(data) {
-				console.log(data);
+				console.log("data: "+ data);
+				console.log("data: "+ data[0].Title);
+				console.log("data: "+ data[0].about);
 				$scope.titles = data;
-				$route.reload();
+				$scope.titles.push($scope.titles);
+				$scope.homeDisplay = true;
 			});
 			
 		};
